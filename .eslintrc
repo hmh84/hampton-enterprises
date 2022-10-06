@@ -1,0 +1,63 @@
+{
+    "extends": ["react-app"],
+    "settings": {
+        "import/resolver": {
+            "typescript": {}
+        }
+    },
+    "rules": {
+        "import/order": [
+            "warn",
+            {
+                "newlines-between": "always",
+                "groups": [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                }
+            }
+        ],
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
+        "no-alert": "warn",
+        "no-var": "error",
+        "@typescript-eslint/no-non-null-assertion": "warn",
+        "no-restricted-imports": [
+            "warn",
+            {
+                "patterns": [
+                    {
+                        "group": ["../*"],
+                        "message": "Usage of relative parent imports is not allowed"
+                    }
+                ],
+                "paths": [
+                    {
+                        "name": ".",
+                        "message": "Usage of local index imports is not allowed"
+                    },
+                    {
+                        "name": "./index",
+                        "message": "Import from the source file instead"
+                    },
+                    {
+                        "name": "react",
+                        "importNames": ["default"],
+                        "message": "'import React' is not needed due to the new JSX transform in React 17. If you need a named export, use 'import { Something } from \"react\"'"
+                    }
+                ]
+            }
+        ],
+        "react/jsx-key": [
+            "error",
+            {
+                "checkFragmentShorthand": true,
+                "checkKeyMustBeforeSpread": true,
+                "warnOnDuplicates": true
+            }
+        ],
+
+        "react/jsx-fragments": "warn",
+        "react/jsx-no-useless-fragment": ["warn", { "allowExpressions": true }],
+        "react/iframe-missing-sandbox": "warn"
+    }
+}

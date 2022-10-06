@@ -1,0 +1,6 @@
+{
+    "watch": ["api", ".env"],
+    "ext": "ts,json",
+    "ignore": ["api/**/*.spec.ts"],
+    "exec": "npm run dev-server-nodemon-command"
+}
