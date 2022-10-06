@@ -17,4 +17,4 @@ export interface User {
     _multiFactor?: MultiFactorSettings;
 }
 
-export type UpdateUserParams = Pick<User, 'displayName'>;
+export type UpdateUserParams = Pick<Partial<User>, 'displayName'>;

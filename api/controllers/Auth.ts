@@ -37,10 +37,10 @@ const AuthController: Controller = {
             authorized: true,
             callback: async (req, res) => {
                 try {
-                    fbAdmin.auth().revokeRefreshTokens(req.uid);
-                    return res.status(Status.BadRequest);
+                    await fbAdmin.auth().revokeRefreshTokens(req.uid);
+                    return res.clearCookie(authTokenName).status(Status.Ok).send(Status.Ok);
                 } catch (error) {
-                    return res.clearCookie(authTokenName).status(Status.Ok);
+                    return res.status(Status.BadRequest).send((error as Error).message);
                 }
             },
         },
