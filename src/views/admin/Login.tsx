@@ -2,11 +2,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Email, Password } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { Box, InputAdornment, Typography } from '@mui/material';
+import { useModal } from 'mui-modal-provider';
 import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
+import ConfirmDialog from '#/components/ConfirmDialog';
 import { FormInputText } from '#/components/form/FormInputText';
 import { useLogin, useSendPasswordResetEmail } from '#/data/auth';
 import AppLayout from '#/layout/AppLayout';
@@ -30,6 +32,7 @@ const validation = yup
     .required();
 
 export default function Login() {
+    const { showModal } = useModal();
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const login = useLogin();
@@ -47,26 +50,38 @@ export default function Login() {
         try {
             await login.mutateAsync(getValues());
             navigate(`/admin`);
-        } catch (error: any) {
+        } catch (error) {
             enqueueSnackbar(getErrorMsg(error), {
                 variant: 'error',
             });
         }
     };
 
-    const handleResetPassword = async () => {
+    const handleSendResetPasswordEmail = async () => {
         const { email } = getValues();
 
-        try {
-            await sendPasswordResetEmail.mutateAsync({ email });
-            enqueueSnackbar('Password reset email sent.', {
-                variant: 'success',
-            });
-        } catch (error: any) {
-            enqueueSnackbar(getErrorMsg(error), {
-                variant: 'error',
-            });
-        }
+        const modal = showModal(ConfirmDialog, {
+            title: 'Reset Password',
+            message: `Send a reset password email to ${email}?`,
+            acceptButtonText: 'Send',
+            declineButtonText: 'Cancel',
+            onDecline: () => {
+                modal.hide();
+            },
+            onAccept: async () => {
+                try {
+                    await sendPasswordResetEmail.mutateAsync({ email });
+                    modal.hide();
+                    enqueueSnackbar('Password reset email sent.', {
+                        variant: 'success',
+                    });
+                } catch (error) {
+                    enqueueSnackbar(getErrorMsg(error), {
+                        variant: 'error',
+                    });
+                }
+            },
+        });
     };
 
     return (
@@ -107,6 +122,17 @@ export default function Login() {
                             sx={{ mb: 1 }}
                         />
                         <LoadingButton
+                            variant="outlined"
+                            color="error"
+                            loading={sendPasswordResetEmail.isLoading}
+                            disabled={login.isLoading}
+                            loadingPosition="center"
+                            onClick={handleSendResetPasswordEmail}
+                            sx={{ mr: 1 }}
+                        >
+                            Reset Password
+                        </LoadingButton>
+                        <LoadingButton
                             variant="contained"
                             color="primary"
                             type="submit"
@@ -115,16 +141,6 @@ export default function Login() {
                             loadingPosition="center"
                         >
                             Login
-                        </LoadingButton>
-                        <LoadingButton
-                            variant="outlined"
-                            color="error"
-                            loading={sendPasswordResetEmail.isLoading}
-                            disabled={login.isLoading}
-                            loadingPosition="center"
-                            onClick={handleResetPassword}
-                        >
-                            Reset Password
                         </LoadingButton>
                     </Box>
                 </Typography>

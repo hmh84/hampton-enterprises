@@ -12,7 +12,7 @@ export const isProd = () => {
     return import.meta.env.ENVIRONMENT === 'PRODUCTION';
 };
 
-export const getErrorMsg = (error: any) => {
+export const getErrorMsg = (error: unknown) => {
     if (isAxiosError(error) && error.response?.data) {
         return error.response.data as string;
     }
