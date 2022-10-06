@@ -12,6 +12,7 @@ const AuthController: Controller = {
         {
             endpoint: '/login',
             method: 'POST',
+            authorized: false,
             callback: async (req, res) => {
                 const { email, password } = req.body as AuthModels.AuthLoginParams;
                 const { status, user, authToken, tokenExpiration } = await AuthService.Login({ email, password });
@@ -46,6 +47,7 @@ const AuthController: Controller = {
         {
             endpoint: '/forgotPassword',
             method: 'POST',
+            authorized: false,
             callback: async (req, res) => {
                 const status = await AuthService.SendPasswordResetEmail(req.body);
                 return status === Status.Ok

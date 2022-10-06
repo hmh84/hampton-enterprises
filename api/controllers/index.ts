@@ -20,7 +20,7 @@ export interface Controller {
 
 export interface Route {
     endpoint: string;
-    authorized?: boolean;
+    authorized: boolean;
     method: HttpMethod;
     callback: RouteCallback;
 }
@@ -44,7 +44,7 @@ const allControllers: Controller[] = [AuthController, UserController];
 
 export const attachEndpoints = (server: Express) => {
     allControllers.forEach(({ routes, prefix }) => {
-        routes.forEach(({ method, endpoint, authorized = false, callback }) => {
+        routes.forEach(({ method, endpoint, authorized, callback }) => {
             const fullPath = prefix + endpoint;
             const fullCallback = (authorized ? endpointAuthCheck(callback) : callback) as Application;
 
